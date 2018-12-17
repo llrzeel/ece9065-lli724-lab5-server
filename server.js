@@ -20,36 +20,6 @@ app.use(function(req, res, next) {
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
-// configure email 
-nev.configure({
-    verificationURL: 'https://ece9065-lli724-lab5-server-lilongrui.c9users.io/email-verification/${URL}',
-    persistentUserModel: User,
-    tempUserCollection: 'myawesomewebsite_tempusers',
- 
-    transportOptions: {
-        service: 'Gmail',
-        auth: {
-            user: 'zeel56mani@gmail.com',
-            pass: '56attila'
-        }
-    },
-    verifyMailOptions: {
-        from: 'Do Not Reply <zeel56mani@gmail.com>',
-        subject: 'Please confirm account',
-        html: 'Click the following link to confirm your account:</p><p>${URL}</p>',
-        text: 'Please confirm your account by clicking the following link: ${URL}'
-    }
-}, function(error, options){
-});
-
-nev.generateTempUserModel(User);
- 
-
-var TempUser = require('./app/models/user');
-nev.configure({
-    tempUserModel: TempUser
-}, function(error, options){
-});
 
 // ------------------
 var mongoose   = require('mongoose');
@@ -323,7 +293,7 @@ router.route('/comments')
     // userName: String,
     // comment: String,
     // rate: Number,
-    // state: Number
+    // status: Number
     .post(function(req, res) {
         console.log(req);
         //check role
@@ -345,8 +315,8 @@ router.route('/comments')
         if(req.body.rate !== undefined){
             comment.rate = req.body.rate;
         }
-        if(req.body.state !== undefined){
-            comment.state = req.body.state;
+        if(req.body.status !== undefined){
+            comment.status = req.body.status;
         }
         
         
@@ -428,8 +398,8 @@ router.route('/comments/:commentid')
         if(req.body.rate !== undefined){
             comment.rate = req.body.rate;
         }
-        if(req.body.state !== undefined){
-            comment.state = req.body.state;
+        if(req.body.status !== undefined){
+            comment.status = req.body.status;
         }
             
             // save

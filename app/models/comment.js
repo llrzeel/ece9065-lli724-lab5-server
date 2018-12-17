@@ -6,6 +6,6 @@ var CommentSchema  = new Schema({
     userName: String,
     comment: String,
     rate: Number,
-    state: Number
+    status: Number
 });
 module.exports = mongoose.model('Comment', CommentSchema);

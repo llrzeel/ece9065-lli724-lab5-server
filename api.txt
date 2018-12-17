@@ -1,0 +1,11 @@
+/fruit post get 
+/fruit/:fruitid get put delete
+
+/user post get
+/user/:id   get put delete
+
+/comments post get
+/comments/:id get put delete
+
+/login/login get
+/login/logout get
