@@ -2,9 +2,10 @@ var mongoose     = require('mongoose');
 var Schema       = mongoose.Schema;
 
 var CommentSchema  = new Schema({
-    itemId: String,
-    userId: String,
+    itemName: String,
+    userName: String,
     comment: String,
-    rate: Number
+    rate: Number,
+    state: Number
 });
 module.exports = mongoose.model('Comment', CommentSchema);
