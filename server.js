@@ -30,6 +30,8 @@ var port = process.env.PORT || 8080;
 var Fruit = require('./app/models/fruit');
 var Comment = require('./app/models/comment');
 var User = require('./app/models/user');
+var List = require('./app/models/List');
+var ListItem = require('./app/models/listItem');
 // ROUTES FOR OUR API
 
 var router = express.Router();
@@ -126,6 +128,9 @@ router.route('/fruits/:fruit_id')
             }
             if(req.body.totalSale !== undefined && !isNaN(req.body.totalSale)){
                 fruit.totalSale = req.body.totalSale;
+            }
+            if(req.body.Purchase !== undefined && !isNaN(req.body.Purchase)){
+                fruit.totalSale = fruit.totalSale+req.body.Purchase;
             }
             
             // save
@@ -426,7 +431,7 @@ router.route('/comments/:commentid')
         });
     });
     
-
+// ---------------------------------------------------------------------
 router.route('/login/:action')
 .get(function(req, res) {
 
@@ -509,7 +514,142 @@ function loginSuccess(res,user){
     }
     
 }
+// --------------------------------------------------------------
 
+router.route('/userlist')
+    // userName: String,
+    // listName:String,
+    // Description:String,
+    // visiblity:Booleans
+    .post(function(req, res) {
+        console.log(req);
+        
+        
+        let list = new List();
+        
+        if(req.body.userName !== undefined){
+            list.userName = req.body.userName;
+        }
+        if(req.body.listName !== undefined){
+            list.listName = req.body.listName;
+        }
+
+        if(req.body.Description !== undefined){
+            list.Description = req.body.Description;
+        }
+        if(req.body.visiblity !== undefined){
+            list.visiblity = req.body.visiblity;
+        }
+        
+        
+        console.log('new list',req.body.listName);
+        // console.log(req);
+        // save the bear and check for errors
+        list.save(function(err) {
+            if (err){
+                res.send(err);
+            }
+            res.json({ message: 'list created!' });
+        });
+        
+        Comment.find(function(err, comment){
+            if (err){
+                console.log(err);
+            }
+            console.log(comment);
+        });
+ 
+    })
+    
+    .get(function(req,res){
+        // console.log();
+        if(req.query.itemName!== undefined){
+            console.log("query comment by item name");
+            Comment.find({itemName:req.query.itemName},function(err, comment){
+                if (err){
+                    res.send(err);
+                }
+                res.json(comment);
+            });
+            
+        }else{
+            console.log('request all comment');
+            Comment.find(function(err, comment){
+                if (err){
+                    res.send(err);
+                }
+                res.json(comment);
+            });
+            
+        }
+    });
+
+
+router.route('/userlist/:listid')
+    
+    // get by id
+    .get(function(req, res) {
+        // console.log(req);
+        console.log("query comment by id",req.query.itemName);
+        Comment.findById(req.params.commentid, function(err, comment) {
+            if (err){
+                res.send(err);
+            }
+            res.json(comment);
+        });
+    })
+    // update by id
+    .put(function(req, res) {
+        Comment.findById(req.params.commentid, function(err, comment) {
+
+            if (err){
+                console.log("1");
+                res.send(err);
+            }
+            console.log(comment);
+        if(req.body.itemName !== undefined){
+            comment.itemName = req.body.itemName;
+        }
+        if(req.body.userName !== undefined){
+            comment.userName = req.body.userName;
+        }
+
+        if(req.body.comment !== undefined){
+            comment.comment = req.body.comment;
+        }
+        if(req.body.rate !== undefined){
+            comment.rate = req.body.rate;
+        }
+        if(req.body.status !== undefined){
+            comment.status = req.body.status;
+        }
+            
+            // save
+            comment.save(function(err) {
+                if (err){
+                    console.log("3");
+                    res.send(err);
+                }
+                res.json({ message: 'comment updated!' });
+            });
+
+        });
+    })
+    
+    .delete(function(req, res) {
+        Comment.deleteOne({
+            _id: req.params.commentid
+        }, function(err, comment) {
+            if (err){
+                
+                res.send(err);
+            }
+            res.json({ message: 'comment deleted' });
+        });
+    });
+    
+
+// ---------------------------------------------------------------
 
 
 app.use('/api',router);
